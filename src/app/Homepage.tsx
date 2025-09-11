@@ -10,10 +10,13 @@ const Homepage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [popUp, setPopUp] = useState(false);
+  const [search, setSearch] = useState("");
+  const [isOldest, setIsOldest] = useState(true);
 
   const fetchGetTodo = async () => {
     try{
-      const data = await getTodos();
+      const sortBy = isOldest? "Latest" : "Oldest";
+      const data = await getTodos(search, sortBy);
       setTodos(data);
     }catch (error){
       setError("Error Fetching");
@@ -21,6 +24,13 @@ const Homepage = () => {
       setLoading(false);
     }
   }
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchGetTodo();
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search, isOldest]);
 
   useEffect(() => {
     fetchGetTodo();
@@ -58,9 +68,27 @@ const Homepage = () => {
     }
   }
 
+  const handleSort = () => {
+    setIsOldest(setIsOldest => !setIsOldest);
+  }
+
     return (
       <div className="flex flex-col items-center p-10">
         <h1 className="text-6xl mt-8 mb-8">To Do App</h1>
+        <div className="flex justify-between w-11/12">
+          <input
+          type="text"
+          placeholder="Search by Title"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-gray-100 border border-black p-3 mb-5 rounded-sm"/>
+
+          <button className="bg-gray-100 border border-black p-3 mb-5 rounded-sm hover:cursor-pointer"
+          onClick={() => handleSort()}>
+            {isOldest? "latest": "oldest"}
+          </button>
+        </div>
+
         {todos.length > 0 ? (
           todos.map((todo) => (
             <div key={todo.id}className="container border-2 rounded mb-8">
