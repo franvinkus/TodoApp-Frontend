@@ -7,7 +7,7 @@ interface createTodoProps{
     initialData: Todo | null;
 }
 
-const createTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
+const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     const [formData, setFormData] = useState({
         title: "",
         description: ""
@@ -102,4 +102,4 @@ const createTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     );
 }
 
-export default createTodo;
+export default CreateTodo;

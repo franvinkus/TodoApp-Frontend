@@ -15,7 +15,7 @@ const Homepage = () => {
 
   const fetchGetTodo = async () => {
     try{
-      const sortBy = isOldest? "Latest" : "Oldest";
+      const sortBy = isOldest? "Oldest" : "Latest";
       const data = await getTodos(search, sortBy);
       setTodos(data);
     }catch (error){
@@ -31,10 +31,6 @@ const Homepage = () => {
     }, 500);
     return () => clearTimeout(handler);
   }, [search, isOldest]);
-
-  useEffect(() => {
-    fetchGetTodo();
-  }, []);
 
   const handlePopUp = () => {
     setEditTodo(null);
