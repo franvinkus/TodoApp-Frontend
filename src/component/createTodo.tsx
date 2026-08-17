@@ -10,7 +10,9 @@ interface createTodoProps{
 const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     const [formData, setFormData] = useState({
         title: "",
-        description: ""
+        description: "",
+        startDate: null as Date | null,
+        endDate: null as Date | null,
     });
 
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -21,11 +23,20 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         }));
     }
 
+    const parseApiDate = (dateString: any) => {
+        if (!dateString || dateString === "-") return null;
+        const onlyDate = dateString.split(" ")[0]; 
+        const [day, month, year] = onlyDate.split("-");
+        return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
     useEffect(() => {
         if(initialData){
             setFormData({
                 title: initialData.title,
-                description: initialData.description
+                description: initialData.description,
+                startDate: parseApiDate(initialData.startDate),
+                endDate: parseApiDate(initialData.endDate)
             });
         }
     }, [initialData]);
@@ -74,6 +85,50 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
+                        className="rounded border w-full px-2 py-3"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label>Start:</label>
+                        <input
+                        type="date"
+                        placeholder="startDate"
+                        id="startDate"
+                        name="startDate"
+                        value={
+                            formData.startDate 
+                                ? (typeof formData.startDate === 'string' 
+                                    ? (formData.startDate as string).split('T')[0] 
+                                    : (formData.startDate as Date).toISOString().split('T')[0]) 
+                                : ''
+                        }
+                        onChange={(e) => setFormData(prevState => ({
+                            ...prevState,
+                            startDate: e.target.value ? new Date(e.target.value) : null
+                        }))}
+                        className="rounded border w-full px-2 py-3"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label>End:</label>
+                        <input
+                        type="date"
+                        placeholder="endDate"
+                        id="endDate"
+                        name="endDate"
+                        value={
+                            formData.endDate 
+                                ? (typeof formData.endDate === 'string' 
+                                    ? (formData.endDate as string).split('T')[0] 
+                                    : (formData.endDate as Date).toISOString().split('T')[0]) 
+                                : ''
+                        }
+                        onChange={(e) => setFormData(prevState => ({
+                            ...prevState,
+                            endDate: e.target.value ? new Date(e.target.value) : null
+                        }))}
                         className="rounded border w-full px-2 py-3"
                         />
                     </div>

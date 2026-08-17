@@ -92,6 +92,13 @@ const Homepage = () => {
     fetchGetTodo();
   }
 
+  const parseApiDate = (dateString: any) => {
+        if (!dateString || dateString === "-") return null;
+        const onlyDate = dateString.split(" ")[0]; 
+        const [day, month, year] = onlyDate.split("-");
+        return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
     return (
       <div className="flex flex-col items-center p-10">
         {isMounted && isModal && (
@@ -126,8 +133,13 @@ const Homepage = () => {
                     <div className="flex flex-row justify-between items-center">
                       <div className="w-5/6 ">
                         <p className="pl-2 mb-4">{todo.description}</p>
-                        <p className="pl-2 text-xs">Created: {todo.createdAt.toString()}</p>
-                        <p className="pl-2 text-xs">Finished: {todo.finishedAt.toString()}</p>
+                        <div className="grid grid-cols-2 gap-y-1 w-3/4"> 
+                            <p className="pl-2 text-xs">Created: {parseApiDate(todo.createdAt)?.toLocaleDateString("id-ID")}</p>
+                            <p className="pl-2 text-xs">Finished: {parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") ?  parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") : "-"}</p>
+                            
+                            <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleDateString("id-ID")}</p>
+                            <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleDateString("id-ID")}</p>
+                        </div>
                       </div>
 
                       <div>

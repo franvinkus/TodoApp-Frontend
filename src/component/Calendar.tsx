@@ -22,6 +22,7 @@ interface CalendarEvent {
   title: string;
   start: Date;
   end: Date;
+  color?: string;
 }
 
 interface CalendarProps{
@@ -45,8 +46,9 @@ export default function TodoCalendar({ todos }: CalendarProps) {
         const fetchGetTodo = async () => {
             try{
                 const data = await getTodos();
+                const pastelColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
                 const validEvents: CalendarEvent[] = [];
-
+                const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
 
                 // const formattedEvents = data.map((todo) => {
                 //     const parsedDate = parse(String(todo.createdAt), 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -60,12 +62,20 @@ export default function TodoCalendar({ todos }: CalendarProps) {
                 // }).filter((event) => event !== null);
 
                 todos.forEach((todo) => {
-                    const parsedDate = parse(String(todo.createdAt), 'dd-MM-yyyy HH:mm:ss', new Date());
-                    if (!isNaN(parsedDate.getTime())) {
+                    const parsedStartDate = parse(String(todo.startDate), 'dd-MM-yyyy HH:mm:ss', new Date());
+                    const parsedEndDate = parse(String(todo.endDate), 'dd-MM-yyyy HH:mm:ss', new Date());
+                    if (!isNaN(parsedStartDate.getTime())) {
+                        let hash = 0;
+                        for (let i = 0; i < todo.title.length; i++) {
+                            hash = todo.title.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                        const index = Math.abs(hash) % pastelColors.length;
+                        const uniqueColor = pastelColors[index];
                         validEvents.push({
                             title: todo.title,
-                            start: parsedDate,
-                            end: parsedDate 
+                            start: parsedStartDate,
+                            end: parsedEndDate,
+                            color: uniqueColor
                         });
                     }
                 });
@@ -89,6 +99,22 @@ export default function TodoCalendar({ todos }: CalendarProps) {
         setIsMounted(true);
     }, []);
 
+    const eventStyleGetter = (event: CalendarEvent) => {
+        const style = {
+            backgroundColor: event.color, // <--- Gunakan warna bawaan event
+            borderRadius: '6px',
+            opacity: 0.9,
+            color: 'white',
+            border: 'none',
+            display: 'block',
+            padding: '2px 5px'
+        };
+
+        return {
+            style: style
+        };
+    };
+
     if (loading) return <div>Memuat kalender...</div>;
     if (error) return <div>{error}</div>;
     if (!isMounted) return null;
@@ -101,7 +127,7 @@ export default function TodoCalendar({ todos }: CalendarProps) {
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
-                
+                eventPropGetter={eventStyleGetter}
                 date={currentDate} 
                 view={currentView}
                 onNavigate={(newDate) => setCurrentDate(newDate)}

@@ -8,17 +8,23 @@ export interface Todo {
   description: string;
   createdAt: Date;
   finishedAt: Date,
+  startDate: Date;
+  endDate: Date;
   isCompleted: boolean;
 }
 
 export interface PostTodoModel {
   title: string;
   description: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 export interface PutTodoModel {
   title: string;
   description: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 export interface login{
