@@ -1,4 +1,6 @@
+import { getToken } from "@/utils/Auth";
 import axios from "axios";
+import { email } from "react-admin";
 
 export interface Todo {
   id: number;
@@ -19,11 +21,76 @@ export interface PutTodoModel {
   description: string;
 }
 
-const BASE_URL = "http://localhost:5020/api/Todo";
+export interface login{
+    username: string;
+    password: string;
+}
+
+export interface register extends login{
+    email: string;
+}
+
+const BASE_API = "http://localhost:7016/api";
+
+export const API_URL = {
+    AUTH:{
+        Login:`${BASE_API}/User/user-login`,
+        Register: `${BASE_API}/User/user-register`
+    }
+}
+
+axios.interceptors.request.use((config) => {
+    const token = getToken();
+    if(token){
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+})
+
+export const login = async (req: login) => {
+    try{
+        const response = await axios.post(API_URL.AUTH.Login, {
+            username: req.username,
+            password: req.password,
+        });
+        console.log(response);
+        const token = response.data;
+        localStorage.setItem("token", token);
+        return true;
+    } catch(error){
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                throw new Error("Username atau password salah!");
+            }
+        }
+        
+        throw error;
+    }
+}
+
+export const register = async (req: register) => {
+    try{
+        const response = await axios.post(API_URL.AUTH.Register, {
+            email: req.email,
+            username: req.username,
+            password: req.password,
+        });
+        console.log(response);
+        return true;
+    }catch(error){
+        if (axios.isAxiosError(error)) {
+           console.log('error cuy: ', error);
+        }
+        
+        throw error;
+    }
+}
 
 export const getTodos = async (title?: string, sort?: string): Promise<Todo[]> => {
   try {
-    const response = await axios.get<Todo[]>(`${BASE_URL}/Get`, {
+    const response = await axios.get<Todo[]>(`${BASE_API}/Todo/Get`, {
       params: { title, sort }
     });
     return response.data;
@@ -35,7 +102,7 @@ export const getTodos = async (title?: string, sort?: string): Promise<Todo[]> =
 
 export const postTodo = async (todoData: PostTodoModel): Promise<Todo[]> => {
     try{
-        const response = await axios.post(`${BASE_URL}/Post`, todoData);
+        const response = await axios.post(`${BASE_API}/Todo/Post`, todoData);
         return response.data;
     }catch (error){
         console.error('Error posting todo:', error);
@@ -45,7 +112,7 @@ export const postTodo = async (todoData: PostTodoModel): Promise<Todo[]> => {
 
 export const putTodo = async (id: number, todoData: PutTodoModel): Promise<Todo[]> => {
     try{
-        const response = await axios.put(`${BASE_URL}/PutTodo/${id}`, todoData);
+        const response = await axios.put(`${BASE_API}/Todo/PutTodo/${id}`, todoData);
         return response.data;
     }catch (error){
         console.error('Error putting todo:', error);
@@ -55,7 +122,7 @@ export const putTodo = async (id: number, todoData: PutTodoModel): Promise<Todo[
 
 export const patchTodo = async (id: number): Promise<Todo[]> => {
     try{
-        const response = await axios.put(`${BASE_URL}/PatchTodo/${id}`);
+        const response = await axios.put(`${BASE_API}/Todo/PatchTodo/${id}`);
         return response.data;
     }catch (error){
         console.error('Error patching todo:', error);
@@ -65,7 +132,7 @@ export const patchTodo = async (id: number): Promise<Todo[]> => {
 
 export const deleteTodo = async (id: number): Promise<Todo[]> => {
     try{
-        const response = await axios.delete(`${BASE_URL}/DeleteTodo/${id}`);
+        const response = await axios.delete(`${BASE_API}/Todo/DeleteTodo/${id}`);
         return response.data;
     }catch (error){
         console.error('Error deleting todo:', error);

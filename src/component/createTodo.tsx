@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { postTodo, putTodo, Todo } from "../api";
+import { postTodo, putTodo, Todo } from "../app/api";
 
 interface createTodoProps{
     onClose: () => void;

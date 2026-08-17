@@ -1,9 +1,13 @@
 "use client"
 import React, {useState, useEffect} from "react";
-import { deleteTodo, getTodos, patchTodo, Todo } from "./api";
-import CreateTodo from "./component/createTodo"
+import { deleteTodo, getTodos, patchTodo, Todo } from "../api";
+import CreateTodo from "../../component/createTodo"
+import TodoCalendar from "../../component/Calendar";
+import LoginModal from "@/component/LoginModal";
+import { getToken, isLoggedIn } from "@/utils/Auth";
 
 const Homepage = () => {
+  const isLogged = isLoggedIn();
 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo|null>(null);
@@ -12,8 +16,22 @@ const Homepage = () => {
   const [popUp, setPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [isOldest, setIsOldest] = useState(true);
+  const [isLogIn, setIsLogIn] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+
+  useEffect(() => {
+    const logged = isLoggedIn();
+    if (!logged) {
+      setIsModal(true); 
+    }
+  }, []);
 
   const fetchGetTodo = async () => {
+    const token = getToken();
+    if(!token) return;
+
     try{
       const sortBy = isOldest? "Oldest" : "Latest";
       const data = await getTodos(search, sortBy);
@@ -29,6 +47,7 @@ const Homepage = () => {
     const handler = setTimeout(() => {
       fetchGetTodo();
     }, 500);
+    setIsMounted(true);
     return () => clearTimeout(handler);
   }, [search, isOldest]);
 
@@ -68,9 +87,19 @@ const Homepage = () => {
     setIsOldest(setIsOldest => !setIsOldest);
   }
 
+  const handleCloseModal = () =>{
+    setIsModal(false);
+    fetchGetTodo();
+  }
+
     return (
       <div className="flex flex-col items-center p-10">
+        {isMounted && isModal && (
+          <LoginModal onClose={handleCloseModal}/>
+        )}
+
         <h1 className="text-6xl mt-8 mb-8">To Do App</h1>
+        <TodoCalendar todos={todos}/>
         <div className="flex justify-between w-11/12">
           <input
           type="text"
@@ -124,12 +153,14 @@ const Homepage = () => {
           <div className="p-4 text-center">No todos found.</div>
         )}
 
-        <div className="flex justify-end">
+        <div className="mt-15"></div>
+
+        <div className="fixed bottom-10 justify-end">
           <button className="p-2 text-white bg-green-400 rounded hover:cursor-pointer hover:text-black hover:bg-green-200" onClick={handlePopUp}>
             Add Todo
           </button>
         </div>
-        {popUp && <CreateTodo onClose={handleClosePopUp} onSuccess={fetchGetTodo} initialData={editTodo}/>}
+        {isMounted && popUp && <CreateTodo onClose={handleClosePopUp} onSuccess={fetchGetTodo} initialData={editTodo}/>}
       </div>  
     );
 }
