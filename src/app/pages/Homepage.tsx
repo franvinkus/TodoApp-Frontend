@@ -7,8 +7,6 @@ import LoginModal from "@/component/LoginModal";
 import { getToken, isLoggedIn } from "@/utils/Auth";
 
 const Homepage = () => {
-  const isLogged = isLoggedIn();
-
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo|null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,6 +48,7 @@ const Homepage = () => {
     }, 500);
     setIsMounted(true);
     return () => clearTimeout(handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, isOldest]);
 
   const handlePopUp = () => {
