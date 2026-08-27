@@ -23,8 +23,13 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         }));
     }
 
-    const parseApiDate = (dateString: any) => {
+    const parseApiDate = (dateString: string | Date | null | undefined) => {
         if (!dateString || dateString === "-") return null;
+
+        if (dateString instanceof Date) {
+          return dateString;
+        }
+
         const onlyDate = dateString.split(" ")[0]; 
         const [day, month, year] = onlyDate.split("-");
         return new Date(Number(year), Number(month) - 1, Number(day));

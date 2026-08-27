@@ -11,8 +11,6 @@ const Homepage = () => {
   const [editTodo, setEditTodo] = useState<Todo|null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState("");
   const [popUp, setPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [isOldest, setIsOldest] = useState(true);
@@ -36,7 +34,7 @@ const Homepage = () => {
       const data = await getTodos(search, sortBy);
       setTodos(data);
     }catch (error){
-      setError("Error Fetching");
+      alert(error);
     }finally{
       setLoading(false);
     }
@@ -92,8 +90,13 @@ const Homepage = () => {
     fetchGetTodo();
   }
 
-  const parseApiDate = (dateString: any) => {
+  const parseApiDate = (dateString: string | Date | null | undefined) => {
         if (!dateString || dateString === "-") return null;
+
+        if (dateString instanceof Date) {
+          return dateString;
+        }
+        
         const onlyDate = dateString.split(" ")[0]; 
         const [day, month, year] = onlyDate.split("-");
         return new Date(Number(year), Number(month) - 1, Number(day));

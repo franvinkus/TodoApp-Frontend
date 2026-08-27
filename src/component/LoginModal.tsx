@@ -104,7 +104,7 @@ export default function LoginModal({onClose}: param) {
                             className="text-sm text-blue-400 hover:cursor-pointer hover:text-blue-300"
                             onClick={() => setIsLoggingIn(false)}
                             >
-                                Don't have an account? Register, Here!
+                                Don&apos;t have an account? Register, Here!
                             </button>
 
                             <button 
