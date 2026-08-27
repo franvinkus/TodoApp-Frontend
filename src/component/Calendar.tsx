@@ -101,7 +101,7 @@ export default function TodoCalendar({ todos }: CalendarProps) {
 
     const eventStyleGetter = (event: CalendarEvent) => {
         const style = {
-            backgroundColor: event.color, // <--- Gunakan warna bawaan event
+            backgroundColor: event.color,
             borderRadius: '6px',
             opacity: 0.9,
             color: 'white',
@@ -131,7 +131,7 @@ export default function TodoCalendar({ todos }: CalendarProps) {
                 date={currentDate} 
                 view={currentView}
                 onNavigate={(newDate) => setCurrentDate(newDate)}
-                onView={(newView) => setCurrentView(newView as any)}
+                onView={(newView) => setCurrentView(newView as 'month' | 'week' | 'work_week' | 'day' | 'agenda')}
                 style={{ height: '100%', width: '80%', backgroundColor: 'white', padding: '10px', borderRadius: '8px', fontSize: '10px', overflow: "auto" }}
             />
         </div>

@@ -1,6 +1,5 @@
 import { getToken } from "@/utils/Auth";
 import axios from "axios";
-import { email } from "react-admin";
 
 export interface Todo {
   id: number;
