@@ -11,12 +11,13 @@ const Homepage = () => {
 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo|null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState("");
   const [popUp, setPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [isOldest, setIsOldest] = useState(true);
-  const [isLogIn, setIsLogIn] = useState(false);
   const [isModal, setIsModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 

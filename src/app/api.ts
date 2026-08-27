@@ -36,7 +36,7 @@ export interface register extends login{
     email: string;
 }
 
-const BASE_API = "http://localhost:7016/api";
+const BASE_API = process.env.NEXT_PUBLIC_API_URL ||"http://localhost:7016/api";
 
 export const API_URL = {
     AUTH:{
