@@ -97,9 +97,19 @@ const Homepage = () => {
           return dateString;
         }
         
-        const onlyDate = dateString.split(" ")[0]; 
+        const parts = dateString.split(" ");
+        const onlyDate = parts[0]; 
         const [day, month, year] = onlyDate.split("-");
-        return new Date(Number(year), Number(month) - 1, Number(day));
+        
+        let hours = 0, minutes = 0, seconds = 0;
+        if (parts.length > 1) {
+            const timeParts = parts[1].split(":");
+            hours = Number(timeParts[0]) || 0;
+            minutes = Number(timeParts[1]) || 0;
+            seconds = Number(timeParts[2]) || 0;
+        }
+
+        return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), hours, minutes, seconds));
     }
 
     return (
@@ -140,8 +150,8 @@ const Homepage = () => {
                             <p className="pl-2 text-xs">Created: {parseApiDate(todo.createdAt)?.toLocaleDateString("id-ID")}</p>
                             <p className="pl-2 text-xs">Finished: {parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") ?  parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") : "-"}</p>
                             
-                            <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleDateString("id-ID")}</p>
-                            <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleDateString("id-ID")}</p>
+                            <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
+                            <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
                         </div>
                       </div>
 

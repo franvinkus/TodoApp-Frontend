@@ -11,8 +11,8 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     const [formData, setFormData] = useState({
         title: "",
         description: "",
-        startDate: null as Date | null,
-        endDate: null as Date | null,
+        startDate: "",
+        endDate: "",
     });
 
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -30,18 +30,42 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
           return dateString;
         }
 
-        const onlyDate = dateString.split(" ")[0]; 
+        const parts = dateString.split(" ");
+        const onlyDate = parts[0]; 
         const [day, month, year] = onlyDate.split("-");
-        return new Date(Number(year), Number(month) - 1, Number(day));
+        
+        let hours = 0, minutes = 0, seconds = 0;
+        if (parts.length > 1) {
+            const timeParts = parts[1].split(":");
+            hours = Number(timeParts[0]) || 0;
+            minutes = Number(timeParts[1]) || 0;
+            seconds = Number(timeParts[2]) || 0;
+        }
+
+        return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), hours, minutes, seconds));
     }
+
+    const formatLocalDate = (dateInput: Date | string | null) => {
+        if (!dateInput) return '';
+        const d = new Date(dateInput);
+        if (isNaN(d.getTime())) return "";
+        
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
 
     useEffect(() => {
         if(initialData){
             setFormData({
                 title: initialData.title,
                 description: initialData.description,
-                startDate: parseApiDate(initialData.startDate),
-                endDate: parseApiDate(initialData.endDate)
+                startDate: formatLocalDate(parseApiDate(initialData.startDate)),
+                endDate: formatLocalDate(parseApiDate(initialData.endDate)),
             });
         }
     }, [initialData]);
@@ -50,7 +74,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         e.preventDefault();
         try{
             if(initialData){
-                await putTodo(initialData.id,formData);
+                await putTodo(initialData.id, formData);
             }else{
                 await postTodo(formData);
             }
@@ -97,21 +121,12 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                     <div className="mb-4">
                         <label>Start:</label>
                         <input
-                        type="date"
+                        type="datetime-local"
                         placeholder="startDate"
                         id="startDate"
                         name="startDate"
-                        value={
-                            formData.startDate 
-                                ? (typeof formData.startDate === 'string' 
-                                    ? (formData.startDate as string).split('T')[0] 
-                                    : (formData.startDate as Date).toISOString().split('T')[0]) 
-                                : ''
-                        }
-                        onChange={(e) => setFormData(prevState => ({
-                            ...prevState,
-                            startDate: e.target.value ? new Date(e.target.value) : null
-                        }))}
+                        value={formData.startDate ?? ''}
+                        onChange={handleChange}
                         className="rounded border w-full px-2 py-3"
                         />
                     </div>
@@ -119,21 +134,12 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                     <div className="mb-4">
                         <label>End:</label>
                         <input
-                        type="date"
+                        type="datetime-local"
                         placeholder="endDate"
                         id="endDate"
                         name="endDate"
-                        value={
-                            formData.endDate 
-                                ? (typeof formData.endDate === 'string' 
-                                    ? (formData.endDate as string).split('T')[0] 
-                                    : (formData.endDate as Date).toISOString().split('T')[0]) 
-                                : ''
-                        }
-                        onChange={(e) => setFormData(prevState => ({
-                            ...prevState,
-                            endDate: e.target.value ? new Date(e.target.value) : null
-                        }))}
+                        value={formData.endDate ?? ''}
+                        onChange={handleChange}
                         className="rounded border w-full px-2 py-3"
                         />
                     </div>

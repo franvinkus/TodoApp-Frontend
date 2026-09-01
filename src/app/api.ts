@@ -15,15 +15,15 @@ export interface Todo {
 export interface PostTodoModel {
   title: string;
   description: string;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: string;
+  endDate: string;
 }
 
 export interface PutTodoModel {
   title: string;
   description: string;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: string;
+  endDate: string;
 }
 
 export interface login{
