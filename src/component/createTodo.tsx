@@ -73,10 +73,16 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try{
+            const payload = {
+                ...formData,
+                startDate: formData.startDate ? new Date(formData.startDate).toISOString() : "",
+                endDate: formData.endDate ? new Date(formData.endDate).toISOString() : ""
+            };
+
             if(initialData){
-                await putTodo(initialData.id, formData);
+                await putTodo(initialData.id, payload);
             }else{
-                await postTodo(formData);
+                await postTodo(payload);
             }
             onClose();
             onSuccess();
