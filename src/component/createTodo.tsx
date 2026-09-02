@@ -13,9 +13,10 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         description: "",
         startDate: "",
         endDate: "",
+        todoPriority: "",
     });
 
-    const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
         setFormData(prevState => ({
             ...prevState, 
@@ -66,6 +67,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                 description: initialData.description,
                 startDate: formatLocalDate(parseApiDate(initialData.startDate)),
                 endDate: formatLocalDate(parseApiDate(initialData.endDate)),
+                todoPriority: initialData.todoPriority,
             });
         }
     }, [initialData]);
@@ -81,6 +83,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
 
             if(initialData){
                 await putTodo(initialData.id, payload);
+                console.log(payload);
             }else{
                 await postTodo(payload);
             }
@@ -92,15 +95,26 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     }
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full border-2">
-                <div className="flex justify-center mb-6">
-                    <h2 className="text-xl">Add Your Next Project / Goal</h2>
+        <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40">
+            <div className="bg-white p-6 rounded-lg shadow-xl max-w-[90%] w-auto border-1 border-gray-300">
+                <div className="flex justify-between mb-6">
+                    {initialData != null? (
+                        <h2 className="text-xl">Refine your focus</h2>
+                    ) : (
+                        <h2 className="text-xl">Add Your Next Focus</h2>
+                    )}
+
+                    <button 
+                    type="button" 
+                    className="flex text-gray-400 hover:cursor-pointer" 
+                    onClick={onClose}>
+                        X
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label>Title:</label>
+                        <label className="text-gray-400 font-semibold text-sm">Title</label>
                         <input
                         type="text"
                         placeholder="title"
@@ -108,61 +122,90 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="rounded border w-full px-2 py-3"
+                        className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                         />
                     </div>
 
                     <div className="mb-4">
-                        <label>Description:</label>
+                        <label className="text-gray-400 font-semibold text-sm">Description</label>
                         <textarea
                         placeholder="Description"
                         id="description"
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="rounded border w-full px-2 py-3"
+                        className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                         />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-x-4">
+                        <div className="mb-4">
+                            <label className="text-gray-400 font-semibold text-sm">Start:</label>
+                            <input
+                            type="datetime-local"
+                            placeholder="startDate"
+                            id="startDate"
+                            name="startDate"
+                            value={formData.startDate ?? ''}
+                            onChange={handleChange}
+                            className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="text-gray-400 font-semibold text-sm">End:</label>
+                            <input
+                            type="datetime-local"
+                            placeholder="endDate"
+                            id="endDate"
+                            name="endDate"
+                            value={formData.endDate ?? ''}
+                            onChange={handleChange}
+                            className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                            />
+                        </div>
                     </div>
 
                     <div className="mb-4">
-                        <label>Start:</label>
-                        <input
-                        type="datetime-local"
-                        placeholder="startDate"
-                        id="startDate"
-                        name="startDate"
-                        value={formData.startDate ?? ''}
-                        onChange={handleChange}
-                        className="rounded border w-full px-2 py-3"
-                        />
+                        <label className="text-gray-400 font-semibold text-sm">Priority</label>
+                        <div className="border border-gray-500 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-gray-500 bg-white">
+                            <select
+                            id="todoPriority"
+                            name="todoPriority"
+                            value={formData.todoPriority}
+                            onChange={handleChange}
+                            className="border border-gray-500 rounded-xl p-3 outline-none overflow-hidden focus:ring-2 focus:ring-gray-500 w-full px-2 py-3 hover:cursor-pointer"
+                            >
+                                {/* <option value="" disabled className="text-gray-300" >Choose the Priority</option> */}
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="mb-4">
-                        <label>End:</label>
-                        <input
-                        type="datetime-local"
-                        placeholder="endDate"
-                        id="endDate"
-                        name="endDate"
-                        value={formData.endDate ?? ''}
-                        onChange={handleChange}
-                        className="rounded border w-full px-2 py-3"
-                        />
-                    </div>
-
-                    <div className="flex justify-center">
+                    <div className="flex justify-between mt-10">
                         <button 
                         type="button" 
-                        className="p-2 text-white bg-red-700 rounded hover:cursor-pointer hover:text-black hover:bg-red-400 mr-10" 
+                        className="p-2 px-5 text-gray-700 bg-gray-200 rounded hover:cursor-pointer mr-10" 
                         onClick={onClose}>
                             Close
                         </button>
 
-                        <button 
-                        type="submit" 
-                        className="p-2 text-white bg-green-700 rounded hover:cursor-pointer hover:text-black hover:bg-green-400" >
-                            Submit
-                        </button>
+                        {initialData != null? (
+                            <button 
+                            type="submit" 
+                            className="p-2 px-5 text-white bg-green-700 rounded hover:cursor-pointer hover:bg-green-900" >
+                                Save Changes
+                            </button>
+                        ) : (
+                            <button 
+                            type="submit" 
+                            className="p-2 px-5 text-white bg-green-700 rounded hover:cursor-pointer hover:bg-green-900" >
+                                Create Task
+                            </button>
+                        )}
+                        
 
                     </div>
 

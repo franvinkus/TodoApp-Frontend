@@ -10,6 +10,7 @@ export interface Todo {
   startDate: Date;
   endDate: Date;
   isCompleted: boolean;
+  todoPriority: string;
 }
 
 export interface PostTodoModel {
