@@ -96,7 +96,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40">
-            <div className="bg-white p-6 rounded-lg shadow-xl max-w-[90%] w-auto border-1 border-gray-300">
+            <div className="bg-brand-cream p-6 rounded-lg shadow-xl max-w-[90%] w-auto border-1 border-gray-300">
                 <div className="flex justify-between mb-6">
                     {initialData != null? (
                         <h2 className="text-xl">Refine your focus</h2>
@@ -122,7 +122,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                        className="bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                         />
                     </div>
 
@@ -134,7 +134,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                        className="bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                         />
                     </div>
 
@@ -148,7 +148,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                             name="startDate"
                             value={formData.startDate ?? ''}
                             onChange={handleChange}
-                            className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                            className="bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                             />
                         </div>
 
@@ -161,7 +161,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                             name="endDate"
                             value={formData.endDate ?? ''}
                             onChange={handleChange}
-                            className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                            className="bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
                             />
                         </div>
                     </div>
@@ -174,7 +174,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                             name="todoPriority"
                             value={formData.todoPriority}
                             onChange={handleChange}
-                            className="border border-gray-500 rounded-xl p-3 outline-none overflow-hidden focus:ring-2 focus:ring-gray-500 w-full px-2 py-3 hover:cursor-pointer"
+                            className=" rounded-xl p-3 outline-none overflow-hidden focus:ring-2 focus:ring-gray-500 w-full px-2 py-3 hover:cursor-pointer"
                             >
                                 {/* <option value="" disabled className="text-gray-300" >Choose the Priority</option> */}
                                 <option value="Low">Low</option>
@@ -195,13 +195,13 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                         {initialData != null? (
                             <button 
                             type="submit" 
-                            className="p-2 px-5 text-white bg-green-700 rounded hover:cursor-pointer hover:bg-green-900" >
+                            className="p-2 px-5 text-white bg-green-700 rounded-xl hover:cursor-pointer hover:bg-green-900" >
                                 Save Changes
                             </button>
                         ) : (
                             <button 
                             type="submit" 
-                            className="p-2 px-5 text-white bg-green-700 rounded hover:cursor-pointer hover:bg-green-900" >
+                            className="p-2 px-5 text-white bg-green-700 rounded-xl hover:cursor-pointer hover:bg-green-900" >
                                 Create Task
                             </button>
                         )}

@@ -4,7 +4,8 @@ import { deleteTodo, getTodos, patchTodo, Todo } from "../api";
 import CreateTodo from "../../component/createTodo"
 import TodoCalendar from "../../component/Calendar";
 import LoginModal from "@/component/LoginModal";
-import { getToken, isLoggedIn } from "@/utils/Auth";
+import { getToken, getUserName, isLoggedIn } from "@/utils/Auth";
+import { Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -16,7 +17,8 @@ const Homepage = () => {
   const [isOldest, setIsOldest] = useState(true);
   const [isModal, setIsModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
+  const [todayDate, setTodayDate] = useState("");
+  const nameTitle = getUserName();
 
   useEffect(() => {
     const logged = isLoggedIn();
@@ -118,82 +120,123 @@ const Homepage = () => {
       return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), hours, minutes, seconds));
   }
 
+  const formattedTodayDate = () => {
+    const today: Date = new Date();
+    const todayString = today.toString();
+    const parts = todayString.split(" ");
+    const date = parts[0];
+    const time = parts[1];
+    const [day, month, year] = date.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
   return (
-    <div className="flex flex-col items-center p-10">
-      {isMounted && isModal && (
-        <LoginModal onClose={handleCloseModal}/>
-      )}
+    <div className="min-h-screen bg-gradient-to-tr from-blue-one from-80% to-blue-two/85 to-95% shadow-inner">
+      <div className="flex flex-col items-center p-10">
+        {isMounted && isModal && (
+          <LoginModal onClose={handleCloseModal}/>
+        )}
 
-      <h1 className="text-6xl mt-8 mb-8">To Do App</h1>
-      <TodoCalendar todos={todos}/>
-      <div className="flex justify-between w-11/12">
-        <input
-        type="text"
-        placeholder="Search by Title"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="bg-gray-100 border border-black p-3 mb-5 rounded-sm"/>
+        <div className="flex flex-col justify-start w-full p-1">
+          <h1 className="text-5xl text-white">Welcome, {nameTitle}</h1>
+          <h1 className="text-xl text-gray-400">A little progress every day adds up.</h1>
+        </div>
 
-        <button className="bg-gray-100 border border-black p-3 mb-5 rounded-sm hover:cursor-pointer"
-        onClick={() => handleSort()}>
-          {isOldest? "latest": "oldest"}
-        </button>
-      </div>
+        <TodoCalendar todos={todos}/>
 
-      {todos.length > 0 ? (
-        todos.map((todo) => (
-          <div key={todo.id}className="container border-2 rounded mb-8">
-              <div className="p-4 flex">
-                <div className="w-full">
-                  <div className="flex items-center border-gray-500 gap-x-3 mb-5">
-                    <p className="pl-2 text-2xl">{todo.title}</p>
-                    <p className={`flex rounded-2xl justify-center p-1 px-4 text-[14px] ${priorityColors[todo.todoPriority]}`}>{todo.todoPriority}</p>
-                  </div>
+        <div className="w-full flex flex-col justify-start mb-4 mt-8">
+          <p className="text-gray-300 pl-3 text-lg">Your List</p>
+          <p className="text-white pl-3 text-3xl">Tasks</p>
+        </div>
 
-                  <div className="flex flex-row justify-between items-center">
-                    <div className="w-5/6 ">
-                      <p className="pl-2 mb-4">{todo.description}</p>
-                      <div className="grid grid-cols-2 gap-y-1 w-3/4"> 
-                          <p className="pl-2 text-xs">Created: {parseApiDate(todo.createdAt)?.toLocaleDateString("id-ID")}</p>
-                          <p className="pl-2 text-xs">Finished: {parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") ?  parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") : "-"}</p>
-                          
-                          <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
-                          <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
+        <div className="flex items-stretch justify-between mb-5 w-full">
+          <div className="flex flex-row items-center align-middle gap-x-3">
+            <div className="flex flex-row border text-gray-300 border-gray-300 p-3 rounded-2xl items-center align-middle gap-x-3 w-48 h-12 md:w-full md:h-14">
+              <Search className="text-gray-400"/>
+              <input
+              type="text"
+              placeholder="Search Task"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full h-full placeholder:text-gray-300 placeholder:border-none outline-none md:text-base"/>
+            </div>
+
+            {/* <button className="bg-gray-100 border border-black p-3 mb-5 rounded-sm hover:cursor-pointer"
+            onClick={() => handleSort()}>
+              {isOldest? "latest": "oldest"}
+            </button> */}
+          </div>
+
+          <div className="flex align-middle items-center">
+            <button className="text-xs md:text-lg flex flex-row items-center gap-x-2 p-2 px-4 text-green-moss bg-green-500 rounded-xl hover:cursor-pointer hover:bg-green-300" 
+            onClick={handlePopUp}
+            >
+             <Plus/> Add Todo
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-10">
+          {todos.length > 0 ? (
+            todos.map((todo) => (
+              <div 
+              className={`container rounded-2xl mb-8 shadow-md ${!todo.isCompleted ? "bg-silver" : "bg-slate-300/80 opacity-75"}`}
+              key={todo.id}
+              >
+                  <div className="p-4 flex flex-row">
+                    <button className={`h-auto text-green-300 ${!todo.isCompleted ? "p-2 rounded hover:cursor-pointer" : "p-2 rounded hover:cursor-pointer"}`}
+                    onClick={() => handleFinished(todo.id)}>
+                      {!todo.isCompleted ? <Circle/> : <CircleCheckBig />}
+                    </button>
+                    <div className="w-full">
+                      <div className="flex flex-col">
+                        <div className="flex flex-row gap-x-3 items-center justify-between mb-2 md:mb-0">
+                          <div className="flex flex-col justify-start md:flex-row md:justify-center md:items-center md:gap-x-3">
+                            <p className={`pl-2 text-lg md:text-2xl ${!todo.isCompleted ? "" : "line-through"}`}>{todo.title}</p>
+                            <p className={`flex rounded-2xl justify-center p-1 px-4 text-[14px] h-fit w-fit ${priorityColors[todo.todoPriority]}`}>{todo.todoPriority}</p>
+                          </div>
+
+                          <div className="flex flex-col justify-end md:flex-row">
+                            <button className="p-2 text-gray-400 rounded mr-2 hover:cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleEditTodo(todo)}>
+                              <Pencil/>
+                            </button>
+                            <button className="p-2 text-gray-400 rounded mr-2 hover:cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleDelete(todo.id)}>
+                              <Trash/>
+                            </button>
+                          </div>
+                        </div>
+                          <p className="pl-2 text-gray-600 mb-4">{todo.description}</p>
+                      </div>
+
+                      <div className="flex flex-row justify-between items-center">
+                        <div className="w-full">
+                          <div className="grid grid-cols-2 gap-y-1 w-3/4 gap-y-2 md:gap-y-1"> 
+                              <p className="pl-2 text-xs">Created: {parseApiDate(todo.createdAt)?.toLocaleDateString("id-ID")}</p>
+                              <p className="pl-2 text-xs">Finished: {parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") ?  parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") : "-"}</p>
+                              
+                              <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
+                              <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
+                          </div>
+                        </div>
+
+                        
                       </div>
                     </div>
-
-                    <div>
-                      <button className="p-2 text-white bg-orange-400 rounded mr-2 hover:cursor-pointer hover:text-black hover:bg-orange-200"
-                      onClick={() => handleEditTodo(todo)}>
-                        Edit
-                      </button>
-                      <button className="p-2 text-white bg-red-400 rounded mr-2 hover:cursor-pointer hover:text-black hover:bg-red-200"
-                      onClick={() => handleDelete(todo.id)}>
-                        Delete
-                      </button>
-                      <button className={todo.isCompleted ? "p-2 text-white bg-red-400 rounded hover:cursor-pointer hover:text-black hover:bg-red-200" : "p-2 text-white bg-green-400 rounded hover:cursor-pointer hover:text-black hover:bg-green-200"}
-                      onClick={() => handleFinished(todo.id)}>
-                        {todo.isCompleted ? "Undo" : "Finish"}
-                      </button>
-                    </div>
                   </div>
-                </div>
               </div>
-          </div>
-        ))
-      ) : (
-        <div className="p-4 text-center">No todos found.</div>
-      )}
+            ))
+          ) : (
+            <div className="p-4 text-center text-white">No todos found.</div>
+          )}
+        </div>
 
-      <div className="mt-15"></div>
+        <div className="mt-15"></div>
 
-      <div className="fixed bottom-10 justify-end">
-        <button className="p-2 text-white bg-green-400 rounded hover:cursor-pointer hover:text-black hover:bg-green-200" onClick={handlePopUp}>
-          Add Todo
-        </button>
-      </div>
-      {isMounted && popUp && <CreateTodo onClose={handleClosePopUp} onSuccess={fetchGetTodo} initialData={editTodo}/>}
-    </div>  
+        {isMounted && popUp && <CreateTodo onClose={handleClosePopUp} onSuccess={fetchGetTodo} initialData={editTodo}/>}
+      </div>  
+    </div>
   );
 }
 

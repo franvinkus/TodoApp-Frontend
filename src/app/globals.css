@@ -6,6 +6,15 @@
   /* --foreground: #171717; */
 }
 
+@theme{
+  --color-brand-cream: #FFF8EB;
+  --color-blue-one: #152F4E;
+  --color-blue-two: #10223B;
+  --color-blue-three: #143999;
+  --color-green-moss: #1B6311;
+  --color-silver: #F5F5F5;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
