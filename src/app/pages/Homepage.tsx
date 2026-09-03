@@ -6,6 +6,7 @@ import TodoCalendar from "../../component/Calendar";
 import LoginModal from "@/component/LoginModal";
 import { getToken, getUserName, isLoggedIn } from "@/utils/Auth";
 import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
+import ValidationModal from "@/component/ValidationModal";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -19,6 +20,7 @@ const Homepage = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [todayDate, setTodayDate] = useState("");
   const [nameTitle, setNameTitle] = useState<string | null>("");
+  const [deleteId, setDeleteId] = useState<number|null>(null);
 
   useEffect(() => {
     const logged = isLoggedIn();
@@ -80,6 +82,7 @@ const Homepage = () => {
     try{
       await deleteTodo(id);
       fetchGetTodo();
+      setDeleteId(null);
     }catch(error){
       console.log("Error patching", error);
     }
@@ -246,7 +249,7 @@ const Homepage = () => {
                               <Pencil/>
                             </button>
                             <button className="p-2 text-gray-400 rounded mr-2 hover:cursor-pointer hover:bg-gray-200"
-                            onClick={() => handleDelete(todo.id)}>
+                            onClick={() => setDeleteId(todo.id)}>
                               <Trash/>
                             </button>
                           </div>
@@ -279,6 +282,17 @@ const Homepage = () => {
         <div className="mt-15"></div>
 
         {isMounted && popUp && <CreateTodo onClose={handleClosePopUp} onSuccess={fetchGetTodo} initialData={editTodo}/>}
+        {isMounted && deleteId != null 
+          && 
+          <ValidationModal
+          message="Yakin ingin menghapus tugas ini?" 
+          onClose={() => setDeleteId(null)} 
+          onConfirm={() => {
+            if (deleteId !== null) {
+              handleDelete(deleteId);
+            }
+          }}
+          />}
       </div>  
     </div>
   );
