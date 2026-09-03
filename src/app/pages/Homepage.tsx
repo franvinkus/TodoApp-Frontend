@@ -5,7 +5,7 @@ import CreateTodo from "../../component/createTodo"
 import TodoCalendar from "../../component/Calendar";
 import LoginModal from "@/component/LoginModal";
 import { getToken, getUserName, isLoggedIn } from "@/utils/Auth";
-import { Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
+import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -18,7 +18,7 @@ const Homepage = () => {
   const [isModal, setIsModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [todayDate, setTodayDate] = useState("");
-  const nameTitle = getUserName();
+  const [nameTitle, setNameTitle] = useState<string | null>("");
 
   useEffect(() => {
     const logged = isLoggedIn();
@@ -45,6 +45,8 @@ const Homepage = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       fetchGetTodo();
+      setNameTitle(getUserName());
+      formattedTodayDate();
     }, 500);
     setIsMounted(true);
     return () => clearTimeout(handler);
@@ -124,10 +126,21 @@ const Homepage = () => {
     const today: Date = new Date();
     const todayString = today.toString();
     const parts = todayString.split(" ");
-    const date = parts[0];
-    const time = parts[1];
-    const [day, month, year] = date.split("-");
-    return `${day}-${month}-${year}`;
+    const day = parts[0];
+    const month = parts[1];
+    const date = parts[2];
+    const year = parts[3];
+    setTodayDate(`${day}, ${date}-${month}-${year}`);
+  }
+
+  const countActiveTask = () => {
+    const count = todos.filter((todo) => !todo.isCompleted).length;
+    return count;
+  }
+
+  const countFinishedTask =() => {
+    const count = todos.filter((todo) => todo.isCompleted).length;
+    return count;
   }
 
   return (
@@ -138,9 +151,40 @@ const Homepage = () => {
         )}
 
         <div className="flex flex-col justify-start w-full p-1">
+          <h1 className="text-lg md:text-xl text-gray-400">{todayDate}</h1>
           <h1 className="text-5xl text-white">Welcome, {nameTitle}</h1>
           <h1 className="text-xl text-gray-400">A little progress every day adds up.</h1>
+          <div className="flex flex-row gap-x-10  mt-8">
+            <div className="flex flex-row rounded-xl bg-brand-cream p-2 px-3 gap-x-10">
+              <div className="flex flex-col gap-y-1 md:gap-y-2">
+                <p className="text-sm opacity-60">
+                  Today's Focus
+                </p>
+                <p>
+                  <strong className="md:text-2xl text-xl">{countActiveTask()}</strong> active tasks
+                </p>
+                <p className="md:text-sm text-xs opacity-60">
+                  Keep your momentum going
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-row rounded-xl bg-green-200 p-2 px-3 gap-x-6">
+              <div className="flex justify-between align-middle items-center">
+                <BadgeCheck className="text-green-moss" size={40}/> 
+              </div>
+              <div className="flex flex-col justify-center align-middle">
+                <p className="text-sm opacity-60">
+                    Finished
+                  </p>
+                  <p>
+                    <strong  className="md:text-2xl text-xl">{countFinishedTask()}</strong> tasks
+                  </p>
+              </div>
+            </div>
+          </div>
         </div>
+
 
         <TodoCalendar todos={todos}/>
 
@@ -212,7 +256,7 @@ const Homepage = () => {
 
                       <div className="flex flex-row justify-between items-center">
                         <div className="w-full">
-                          <div className="grid grid-cols-2 gap-y-1 w-3/4 gap-y-2 md:gap-y-1"> 
+                          <div className="grid grid-cols-2 w-3/4 gap-y-2 md:gap-y-1"> 
                               <p className="pl-2 text-xs">Created: {parseApiDate(todo.createdAt)?.toLocaleDateString("id-ID")}</p>
                               <p className="pl-2 text-xs">Finished: {parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") ?  parseApiDate(todo.finishedAt)?.toLocaleDateString("id-ID") : "-"}</p>
                               
