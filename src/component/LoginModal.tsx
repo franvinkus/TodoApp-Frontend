@@ -1,4 +1,5 @@
 import { login, register } from "@/app/api";
+import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 
 interface param{
@@ -68,7 +69,7 @@ export default function LoginModal({onClose}: param) {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40">
             {loggingIn? (
                 //Login
-                <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-auto w-[90%] max-w-[550px] fixed bg-white border-1 border-gray-500 rounded-xl p-4 z-100">
+                <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-auto w-[90%] max-w-[550px] fixed bg-brand-cream border-1 border-gray-500 rounded-xl p-4 z-100">
                     <div className="flex-col">
                         <div className="flex flex-col justify-start gap-y-2">
                             <div className="text-lg opacity-50">
@@ -87,26 +88,30 @@ export default function LoginModal({onClose}: param) {
                             e.preventDefault();
                             handleSubmit();
                         }} 
-                        className="flex-row justify space-y-7 mt-10">
-                            <div className="flex flex-col">
+                        className="flex-row justify space-y-7 mt-6 ">
+                            <div className="flex flex-col ">
                                 <label className="mb-2 text-gray-400 font-semibold text-sm">Username </label>
-                                <input
-                                className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500"
-                                placeholder="Insert username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                />
+                                <div className="flex flex-row gap-x-4 bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500">
+                                    <User className="text-gray-500"/>
+                                    <input
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full placeholder:border-none outline-none"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex flex-col">
                                 <label className="mb-2 text-gray-400 font-semibold text-sm">Password </label>
-                                <input
-                                className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500"
-                                placeholder="Insert Password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <div className="flex flex-row gap-x-4 bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500">
+                                    <Lock className="text-gray-500"/>
+                                    <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full placeholder:border-none outline-none"
+                                    />
+                                </div>
                             </div>
                         </form>
 
@@ -134,7 +139,7 @@ export default function LoginModal({onClose}: param) {
 
             ) : (
                 //Register
-                <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-auto w-[90%] max-w-[550px] fixed bg-white border-1 border-gray-500 rounded-xl p-4 z-100">
+                <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-auto w-[90%] max-w-[550px] fixed bg-brand-cream border-1 border-gray-500 rounded-xl p-4 z-100">
                     <div className="flex-col">
 
                         <div className="flex flex-col justify-start gap-y-2">
@@ -154,37 +159,43 @@ export default function LoginModal({onClose}: param) {
                             e.preventDefault();
                             handleSubmit();
                         }}
-                        className="flex-row justify space-y-7 mt-8">
+                        className="flex-row justify space-y-7 mt-6">
                             <div className="flex flex-col">
                                 <label className="mb-2 text-gray-400 font-semibold text-sm">Username </label>
-                                <input
-                                className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500"
-                                placeholder="Insert username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                />
+                                <div className="flex flex-row gap-x-4 bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500">
+                                    <User className="text-gray-500"/>
+                                    <input
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full placeholder:border-none outline-none"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex flex-col">
                                 <label className="mb-2 text-gray-400 font-semibold text-sm">Email </label>
-                                <input
-                                className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500"
-                                placeholder="Insert Email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                />
+                                <div className="flex flex-row gap-x-4 bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500">
+                                    <Mail className="text-gray-500"/>
+                                    <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full placeholder:border-none outline-none"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex flex-col">
                                 <label className="mb-2 text-gray-400 font-semibold text-sm">Password </label>
-                                <input
-                                className="border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500"
-                                placeholder="Insert Password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <div className="flex flex-row gap-x-4 bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500">
+                                    <Lock className="text-gray-500"/>
+                                    <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full placeholder:border-none outline-none"
+                                    />
+                                </div>
                             </div>
                         </form>
                 

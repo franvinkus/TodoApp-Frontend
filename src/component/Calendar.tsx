@@ -120,8 +120,10 @@ export default function TodoCalendar({ todos }: CalendarProps) {
     if (!isMounted) return null;
 
     return (
-        <div style={{ height: '80vh', padding: '20px', zIndex: 0, width: '100%', justifyItems: 'center', marginBottom: '25px' }}>
-            <h2>Calendar</h2>
+        <div
+        className="shadow-inner" 
+        style={{ height: '80vh', padding: '20px', zIndex: 0, width: '100%', justifyItems: 'center', marginBottom: '25px' }}>
+            <h2 className="text-white">Calendar</h2>
             <Calendar
                 localizer={localizer}
                 events={events}
@@ -132,7 +134,8 @@ export default function TodoCalendar({ todos }: CalendarProps) {
                 view={currentView}
                 onNavigate={(newDate) => setCurrentDate(newDate)}
                 onView={(newView) => setCurrentView(newView as 'month' | 'week' | 'work_week' | 'day' | 'agenda')}
-                style={{ height: '100%', width: '80%', backgroundColor: 'white', padding: '10px', borderRadius: '8px', fontSize: '10px', overflow: "auto" }}
+                style={{ backgroundColor: 'white', padding: '10px', borderRadius: '8px', fontSize: '10px', overflow: "auto" }}
+                className=" w-[100%] h-full"
             />
         </div>
     );
