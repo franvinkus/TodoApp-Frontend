@@ -7,7 +7,7 @@ interface Props{
     onConfirm: () => void;
 }
 
-const ValidationModal: React.FC<Props> = ({message, onClose}) => {
+const ValidationModal: React.FC<Props> = ({message, onClose, onConfirm}) => {
     return(
         <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40">
             <div className="bg-brand-cream p-6 rounded-lg shadow-xl max-w-[90%] w-[400px] border-1 border-gray-300">
@@ -32,7 +32,9 @@ const ValidationModal: React.FC<Props> = ({message, onClose}) => {
 
                         <button 
                         type="submit" 
-                        className="p-2 px-5 text-white bg-red-700 rounded-xl hover:cursor-pointer hover:bg-red-900" >
+                        className="p-2 px-5 text-white bg-red-700 rounded-xl hover:cursor-pointer hover:bg-red-900" 
+                        onClick={onConfirm}
+                        >
                             Confirm, Delete
                         </button>
                     </div>
