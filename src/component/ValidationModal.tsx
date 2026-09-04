@@ -35,7 +35,7 @@ const ValidationModal: React.FC<Props> = ({message, onClose, onConfirm}) => {
                         className="p-2 px-5 text-white bg-red-700 rounded-xl hover:cursor-pointer hover:bg-red-900" 
                         onClick={onConfirm}
                         >
-                            Confirm, Delete
+                            Delete
                         </button>
                     </div>
                 </div>
