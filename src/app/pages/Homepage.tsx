@@ -1,10 +1,10 @@
 "use client"
 import React, {useState, useEffect} from "react";
-import { deleteTodo, getTodos, patchTodo, Todo } from "../api";
+import { deleteTodo, getTodos, logout, patchTodo, Todo } from "../api";
 import CreateTodo from "../../component/createTodo"
 import TodoCalendar from "../../component/Calendar";
 import LoginModal from "@/component/LoginModal";
-import { getToken, getUserName, isLoggedIn } from "@/utils/Auth";
+import { getUserName, isLoggedIn } from "@/utils/Auth";
 import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
 import ValidationModal from "@/component/ValidationModal";
 
@@ -30,8 +30,8 @@ const Homepage = () => {
   }, []);
 
   const fetchGetTodo = async () => {
-    const token = getToken();
-    if(!token) return;
+    const username = getUserName();
+    if(!username) return;
 
     try{
       const sortBy = isOldest? "Oldest" : "Latest";
@@ -85,6 +85,18 @@ const Homepage = () => {
       setDeleteId(null);
     }catch(error){
       console.log("Error patching", error);
+    }
+  }
+
+  const handleLogout = async () => {
+    try{
+      const response = await logout();
+      if(response){
+        localStorage.removeItem("username");
+        window.location.href = "/";
+      }
+    }catch(error){
+      console.log("Error logging out", error);
     }
   }
 
@@ -154,9 +166,15 @@ const Homepage = () => {
         )}
 
         <div className="flex flex-col justify-start w-full p-1">
-          <h1 className="text-lg md:text-xl text-gray-400">{todayDate}</h1>
-          <h1 className="text-5xl text-white">Welcome, {nameTitle}</h1>
-          <h1 className="text-xl text-gray-400">A little progress every day adds up.</h1>
+          <div className="flex flex-col justify-between">
+            <h1 className="text-lg md:text-xl text-gray-400">{todayDate}</h1>
+            <h1 className="text-5xl text-white">Welcome, {nameTitle}</h1>
+            <h1 className="text-xl text-gray-400">A little progress every day adds up.</h1>
+
+            <div className="flex rounded-xl p-2 px-4 w-fit border-1 border-gray-200 bg-white text-red-300 hover:bg-brand-cream hover:text-red-500 hover:cursor-pointer mt-3">
+            <button onClick={() => handleLogout()}>Logout</button>
+            </div>
+          </div>
           <div className="flex flex-row gap-x-10  mt-8">
             <div className="flex flex-row rounded-xl bg-brand-cream p-2 px-3 gap-x-10">
               <div className="flex flex-col gap-y-1 md:gap-y-2">
