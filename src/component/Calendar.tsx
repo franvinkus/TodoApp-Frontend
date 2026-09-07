@@ -3,7 +3,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { getTodos, Todo } from '../app/api';
-import { getToken } from '@/utils/Auth';
+import { getUserName } from '@/utils/Auth';
 import { todo } from 'node:test';
 
 const locales = {
@@ -40,8 +40,8 @@ export default function TodoCalendar({ todos }: CalendarProps) {
     
 
     useEffect (() => {
-        const token = getToken();
-        if(!token) return;
+        const username = getUserName();
+        if(!username) return;
 
         const fetchGetTodo = async () => {
             try{

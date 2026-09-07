@@ -1,4 +1,3 @@
-import { getToken } from "@/utils/Auth";
 import axios from "axios";
 
 export interface Todo {
@@ -41,29 +40,23 @@ const BASE_API = process.env.NEXT_PUBLIC_API_URL ||"http://localhost:7016/api";
 export const API_URL = {
     AUTH:{
         Login:`${BASE_API}/User/user-login`,
-        Register: `${BASE_API}/User/user-register`
+        Register: `${BASE_API}/User/user-register`,
+        Logout: `${BASE_API}/User/user-logout`
     }
 }
-
-axios.interceptors.request.use((config) => {
-    const token = getToken();
-    if(token){
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-})
 
 export const login = async (req: login) => {
     try{
         const response = await axios.post(API_URL.AUTH.Login, {
             username: req.username,
             password: req.password,
+        },
+        {
+            withCredentials: true 
         });
         console.log(response);
-        const token = response.data;
-        localStorage.setItem("token", token);
+        const username = response.data.username;
+        localStorage.setItem("username", username);
         return true;
     } catch(error){
         if (axios.isAxiosError(error)) {
@@ -72,6 +65,17 @@ export const login = async (req: login) => {
             }
         }
         
+        throw error;
+    }
+}
+
+export const logout = async() => {
+    try{
+        const response = await axios.post(API_URL.AUTH.Logout);
+        console.log(response);
+        return true;
+    }catch(error){
+        console.log("Error logging out", error);
         throw error;
     }
 }
@@ -97,7 +101,8 @@ export const register = async (req: register) => {
 export const getTodos = async (title?: string, sort?: string): Promise<Todo[]> => {
   try {
     const response = await axios.get<Todo[]>(`${BASE_API}/Todo/Get`, {
-      params: { title, sort }
+      params: { title, sort },
+      withCredentials: true
     });
     return response.data;
   } catch (error) {
@@ -108,7 +113,9 @@ export const getTodos = async (title?: string, sort?: string): Promise<Todo[]> =
 
 export const postTodo = async (todoData: PostTodoModel): Promise<Todo[]> => {
     try{
-        const response = await axios.post(`${BASE_API}/Todo/Post`, todoData);
+        const response = await axios.post(`${BASE_API}/Todo/Post`, todoData, {
+            withCredentials: true
+        });
         return response.data;
     }catch (error){
         console.error('Error posting todo:', error);
@@ -118,7 +125,9 @@ export const postTodo = async (todoData: PostTodoModel): Promise<Todo[]> => {
 
 export const putTodo = async (id: number, todoData: PutTodoModel): Promise<Todo[]> => {
     try{
-        const response = await axios.put(`${BASE_API}/Todo/PutTodo/${id}`, todoData);
+        const response = await axios.put(`${BASE_API}/Todo/PutTodo/${id}`, todoData, {
+            withCredentials: true
+        });
         return response.data;
     }catch (error){
         console.error('Error putting todo:', error);
@@ -128,7 +137,9 @@ export const putTodo = async (id: number, todoData: PutTodoModel): Promise<Todo[
 
 export const patchTodo = async (id: number): Promise<Todo[]> => {
     try{
-        const response = await axios.put(`${BASE_API}/Todo/PatchTodo/${id}`);
+        const response = await axios.put(`${BASE_API}/Todo/PatchTodo/${id}`, {
+            withCredentials: true
+        });
         return response.data;
     }catch (error){
         console.error('Error patching todo:', error);
@@ -138,7 +149,9 @@ export const patchTodo = async (id: number): Promise<Todo[]> => {
 
 export const deleteTodo = async (id: number): Promise<Todo[]> => {
     try{
-        const response = await axios.delete(`${BASE_API}/Todo/DeleteTodo/${id}`);
+        const response = await axios.delete(`${BASE_API}/Todo/DeleteTodo/${id}`, {
+            withCredentials: true
+        });
         return response.data;
     }catch (error){
         console.error('Error deleting todo:', error);
