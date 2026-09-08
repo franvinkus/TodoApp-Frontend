@@ -137,7 +137,7 @@ export const putTodo = async (id: number, todoData: PutTodoModel): Promise<Todo[
 
 export const patchTodo = async (id: number): Promise<Todo[]> => {
     try{
-        const response = await axios.put(`${BASE_API}/Todo/PatchTodo/${id}`, {
+        const response = await axios.put(`${BASE_API}/Todo/PatchTodo/${id}`, null, {
             withCredentials: true
         });
         return response.data;
