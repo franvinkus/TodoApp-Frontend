@@ -4,9 +4,10 @@ import { useState } from "react";
 
 interface param{
     onClose: () => void,
+    onSuccessLogin: (username: string) => void,
 }
 
-export default function LoginModal({onClose}: param) {
+export default function LoginModal({onClose, onSuccessLogin}: param) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -33,6 +34,8 @@ export default function LoginModal({onClose}: param) {
                 }
                 const data = await login(payload);
                 if(data){
+                    localStorage.setItem("username", username || payload.username);
+                    onSuccessLogin(username || payload.username);
                     onClose();
                     clearInputs();
                     setIsLoading(false);
