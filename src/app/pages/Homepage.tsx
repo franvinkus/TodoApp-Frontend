@@ -7,6 +7,7 @@ import LoginModal from "@/component/LoginModal";
 import { getUserName, isLoggedIn } from "@/utils/Auth";
 import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
 import ValidationModal from "@/component/ValidationModal";
+import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -24,8 +25,13 @@ const Homepage = () => {
 
   useEffect(() => {
     const logged = isLoggedIn();
+    const name = getUserName();
     if (!logged) {
       setIsModal(true); 
+    }
+    
+    if (name){
+      setNameTitle(name);
     }
   }, []);
 
@@ -162,7 +168,7 @@ const Homepage = () => {
     <div className="min-h-screen bg-gradient-to-tr from-blue-one from-80% to-blue-two/85 to-95% shadow-inner">
       <div className="flex flex-col items-center p-10">
         {isMounted && isModal && (
-          <LoginModal onClose={handleCloseModal}/>
+          <LoginModal onClose={handleCloseModal} onSuccessLogin={(newUsername) => setNameTitle(newUsername)}/>
         )}
 
         <div className="flex flex-col justify-start w-full p-1">
