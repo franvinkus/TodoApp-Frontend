@@ -35,7 +35,10 @@ export interface register extends login{
     email: string;
 }
 
-const BASE_API = process.env.NEXT_PUBLIC_API_URL ||"http://localhost:7016/api";
+
+const BASE_API =  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5020/api" || "http://localhost:7016/api";
+
+axios.defaults.withCredentials = true;
 
 export const API_URL = {
     AUTH:{

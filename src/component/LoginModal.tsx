@@ -116,27 +116,27 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                                     />
                                 </div>
                             </div>
-                        </form>
 
-                        <div className="flex flex-col justify-center items-center mt-6 gap-y-10">
-                            <button 
-                            className=" w-full border-2 text-white bg-green-700 rounded-lg px-3 py-1 hover:bg-green-900 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            >
-                                Login
-                            </button>
-
-                            <div className="text-sm opacity-80">
-                                Don&apos;t have an account?
+                            <div className="flex flex-col justify-center items-center mt-6 gap-y-10">
                                 <button 
-                                className="text-sm text-green-900 hover:cursor-pointer hover:underline ml-2"
-                                onClick={() => setIsLoggingIn(false)}
+                                className=" w-full border-2 text-white bg-green-700 rounded-lg px-3 py-1 hover:bg-green-900 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                onClick={handleSubmit}
+                                disabled={isLoading}
                                 >
-                                     Register, Here!
+                                    Login
                                 </button>
+
+                                <div className="text-sm opacity-80">
+                                    Don&apos;t have an account?
+                                    <button 
+                                    className="text-sm text-green-900 hover:cursor-pointer hover:underline ml-2"
+                                    onClick={() => setIsLoggingIn(false)}
+                                    >
+                                        Register, Here!
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -200,27 +200,27 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                                     />
                                 </div>
                             </div>
-                        </form>
-                
-                        <div className="flex flex-col justify-center items-center mt-6 gap-y-10">
-                            <button 
-                            className=" w-full border-2 text-white bg-green-700 rounded-lg px-3 py-1 hover:bg-green-900 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            >
-                                Register
-                            </button>
-
-                            <div className="text-sm opacity-80">
-                                Already have an account?
+                            
+                            <div className="flex flex-col justify-center items-center mt-6 gap-y-10">
                                 <button 
-                                className="text-sm text-green-900 hover:cursor-pointer hover:underline ml-2"
-                                onClick={() => setIsLoggingIn(true)}
+                                className=" w-full border-2 text-white bg-green-700 rounded-lg px-3 py-1 hover:bg-green-900 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                onClick={handleSubmit}
+                                disabled={isLoading}
                                 >
-                                     Login, Here!
+                                    Register
                                 </button>
+
+                                <div className="text-sm opacity-80">
+                                    Already have an account?
+                                    <button 
+                                    className="text-sm text-green-900 hover:cursor-pointer hover:underline ml-2"
+                                    onClick={() => setIsLoggingIn(true)}
+                                    >
+                                        Login, Here!
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             )}
