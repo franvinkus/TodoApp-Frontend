@@ -22,6 +22,7 @@ const Homepage = () => {
   const [todayDate, setTodayDate] = useState("");
   const [nameTitle, setNameTitle] = useState<string | null>("");
   const [deleteId, setDeleteId] = useState<number|null>(null);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     const logged = isLoggedIn();
@@ -164,6 +165,20 @@ const Homepage = () => {
     return count;
   }
 
+  const filteringTodo = () => {
+    const filteredTodos = todos;
+    switch (filter) {
+      case "all":
+        return filteredTodos;
+      case "completed":
+        return filteredTodos.filter((todo) => todo.isCompleted);
+      case "notCompleted":
+        return filteredTodos.filter((todo) => !todo.isCompleted);
+      default:
+        return filteredTodos;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-tr from-blue-one from-80% to-blue-two/85 to-95% shadow-inner">
       <div className="flex flex-col items-center p-10">
@@ -232,10 +247,18 @@ const Homepage = () => {
               className="w-full h-full placeholder:text-gray-300 placeholder:border-none outline-none md:text-base"/>
             </div>
 
-            {/* <button className="bg-gray-100 border border-black p-3 mb-5 rounded-sm hover:cursor-pointer"
-            onClick={() => handleSort()}>
+            <button 
+            className="h-full bg-gray-100 border border-black p-3 rounded-sm hover:cursor-pointer"
+            onClick={() => handleSort()}
+            >
               {isOldest? "latest": "oldest"}
-            </button> */}
+            </button>
+
+            <select onChange={(e) => setFilter(e.target.value)} value={filter} className="h-full bg-gray-100 border border-black p-3 rounded-sm hover:cursor-pointer placeholder:border-none outline-none md:text-base">
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="notCompleted">Not Completed</option>
+            </select>
           </div>
 
           <div className="flex align-middle items-center">
@@ -249,7 +272,7 @@ const Homepage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-10">
           {todos.length > 0 ? (
-            todos.map((todo) => (
+            filteringTodo().map((todo) => (
               <div 
               className={`container rounded-2xl mb-8 shadow-md ${!todo.isCompleted ? "bg-silver" : "bg-slate-300/80 opacity-75"}`}
               key={todo.id}
