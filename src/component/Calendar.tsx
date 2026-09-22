@@ -61,7 +61,7 @@ export default function TodoCalendar({ todos }: CalendarProps) {
                 //     }
                 // }).filter((event) => event !== null);
 
-                todos.forEach((todo) => {
+                todos.filter((todo) => !todo.isCompleted).forEach((todo) => {
                     const parsedStartDate = parse(String(todo.startDate), 'dd-MM-yyyy HH:mm:ss', new Date());
                     const parsedEndDate = parse(String(todo.endDate), 'dd-MM-yyyy HH:mm:ss', new Date());
                     if (!isNaN(parsedStartDate.getTime())) {
