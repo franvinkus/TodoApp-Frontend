@@ -101,10 +101,10 @@ export const register = async (req: register) => {
     }
 }
 
-export const getTodos = async (title?: string, sort?: string): Promise<Todo[]> => {
+export const getTodos = async (title?: string, sort?: string, prioritySort?: string): Promise<Todo[]> => {
   try {
     const response = await axios.get<Todo[]>(`${BASE_API}/Todo/Get`, {
-      params: { title, sort },
+      params: { title, sort, prioritySort },
       withCredentials: true
     });
     return response.data;

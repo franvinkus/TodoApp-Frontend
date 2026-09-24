@@ -17,6 +17,7 @@ const Homepage = () => {
   const [popUp, setPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [isOldest, setIsOldest] = useState(true);
+  const [prioroty, setPriority] = useState("");
   const [isModal, setIsModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [todayDate, setTodayDate] = useState("");
@@ -42,7 +43,7 @@ const Homepage = () => {
 
     try{
       const sortBy = isOldest? "Oldest" : "Latest";
-      const data = await getTodos(search, sortBy);
+      const data = await getTodos(search, sortBy, prioroty);
       setTodos(data);
     }catch (error){
       alert(error);
@@ -60,7 +61,7 @@ const Homepage = () => {
     setIsMounted(true);
     return () => clearTimeout(handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, isOldest]);
+  }, [search, isOldest, prioroty]);
 
   const handlePopUp = () => {
     setEditTodo(null);
@@ -109,6 +110,10 @@ const Homepage = () => {
 
   const handleSort = () => {
     setIsOldest(setIsOldest => !setIsOldest);
+  }
+
+  const handlePriority = () => {
+    setPriority(prioroty === "" ? "high" : prioroty === "high" ? "low" : "");
   }
 
   const handleCloseModal = () =>{
@@ -246,6 +251,13 @@ const Homepage = () => {
               onChange={(e) => setSearch(e.target.value)}
               className="w-full h-full placeholder:text-gray-300 placeholder:border-none outline-none md:text-base"/>
             </div>
+
+            <button
+            className="h-full bg-gray-100 border border-black p-3 rounded-sm hover:cursor-pointer"
+            onClick={() => handlePriority()}
+            >
+              {prioroty === "" ? "Default" : prioroty === "high" ? "High" : "Low"}
+            </button>
 
             <button 
             className="h-full bg-gray-100 border border-black p-3 rounded-sm hover:cursor-pointer"
