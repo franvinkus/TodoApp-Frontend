@@ -13,7 +13,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         description: "",
         startDate: "",
         endDate: "",
-        todoPriority: "",
+        todoPriority: "Low",
     });
 
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
