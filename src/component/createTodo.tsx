@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { postTodo, putTodo, Todo } from "../app/api";
+import { postTodo, putTodo, TodoDetail } from "../app/api";
+import { Circle, CircleCheckBig } from "lucide-react";
 
 interface createTodoProps{
     onClose: () => void;
     onSuccess: () => void;
-    initialData: Todo | null;
+    initialData: TodoDetail | null;
 }
 
 const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
@@ -14,6 +15,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         startDate: "",
         endDate: "",
         todoPriority: "Low",
+        subTodos: [] as { title: string; isDone: boolean }[]
     });
 
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -68,9 +70,48 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                 startDate: formatLocalDate(parseApiDate(initialData.startDate)),
                 endDate: formatLocalDate(parseApiDate(initialData.endDate)),
                 todoPriority: initialData.todoPriority,
+                subTodos: initialData.subTodos ? initialData.subTodos.map(sub => ({
+                    subId: sub.id,
+                    title: sub.title,
+                    isDone: sub.isDone
+                })) : []
             });
         }
     }, [initialData]);
+
+    const handleAddSubTodo = () => {
+        setFormData(prevState => ({
+            ...prevState,
+            subTodos: [...prevState.subTodos, { subId: "", title: "", isDone: false }]
+        }));
+    };
+
+    const handleSubTodoChange = (index: number, value: string) => {
+        const updatedSubTodos = [...formData.subTodos];
+        updatedSubTodos[index].title = value;
+
+        setFormData(prevState => ({
+            ...prevState,
+            subTodos: updatedSubTodos
+        }));
+    };
+
+    const handleRemoveSubTodo = (index: number) => {
+        setFormData(prevState => ({
+            ...prevState,
+            subTodos: prevState.subTodos.filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleSubIsDone = (index: number, isDone: boolean) => {
+        const updatedSubTodos = [...formData.subTodos];
+        updatedSubTodos[index].isDone = !isDone;
+
+        setFormData(prevState => ({
+            ...prevState,
+            subTodos: updatedSubTodos
+        }));
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,8 +136,8 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     }
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40">
-            <div className="bg-brand-cream p-6 rounded-lg shadow-xl max-w-[90%] w-auto border-1 border-gray-300">
+        <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40 ">
+            <div className="bg-brand-cream p-6 rounded-lg shadow-xl max-w-[90%] max-h-[90%] w-auto border-1 border-gray-300 overflow-y-auto custom-scrollbar">
                 <div className="flex justify-between mb-6">
                     {initialData != null? (
                         <h2 className="text-xl">Refine your focus</h2>
@@ -181,6 +222,47 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
                                 <option value="Medium">Medium</option>
                                 <option value="High">High</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="text-gray-400 font-semibold text-sm">Sub-tasks</label>
+                            
+                            <button 
+                                type="button" 
+                                onClick={handleAddSubTodo}
+                                className="text-xs text-white bg-blue-500 px-3 py-1 rounded hover:bg-blue-300"
+                            >
+                                + Add Sub-task
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col gap-y-2">
+                            {formData.subTodos.map((sub, index) => (
+                                <div key={index} className="flex items-center gap-x-2">
+                                    <button 
+                                    type="button"
+                                    className={`h-auto text-green-300 ${!sub.isDone ? "p-2 rounded hover:cursor-pointer" : "p-2 rounded hover:cursor-pointer"}`}
+                                    onClick={() => handleSubIsDone(index, sub.isDone)}>
+                                        {!sub.isDone ? <Circle/> : <CircleCheckBig/>}
+                                    </button>
+                                    <input
+                                        type="text"
+                                        placeholder="Sub-task"
+                                        value={sub.title}
+                                        onChange={(e) => handleSubTodoChange(index, e.target.value)}
+                                        className="bg-white border-1 border-gray-500 rounded-xl p-3 outline-none focus:ring-2 focus:ring-gray-500 w-full px-2 py-3"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveSubTodo(index)}
+                                        className="text-xs text-white bg-red-600 px-3 py-1 rounded hover:bg-red-400"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
                         </div>
                     </div>
 

@@ -1,6 +1,6 @@
 "use client"
 import React, {useState, useEffect} from "react";
-import { deleteTodo, getTodos, logout, patchTodo, Todo } from "../api";
+import { deleteTodo, getTodoDetail, getTodos, logout, patchTodo, Todo, TodoDetail } from "../api";
 import CreateTodo from "../../component/createTodo"
 import TodoCalendar from "../../component/Calendar";
 import LoginModal from "@/component/LoginModal";
@@ -11,7 +11,7 @@ import { convertServerPatchToFullTree } from "next/dist/client/components/segmen
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [editTodo, setEditTodo] = useState<Todo|null>(null);
+  const [editTodo, setEditTodo] = useState<TodoDetail|null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
   const [popUp, setPopUp] = useState(false);
@@ -72,8 +72,15 @@ const Homepage = () => {
     setPopUp(false);
   };
 
-  const handleEditTodo = (todo: Todo) => {
-    setEditTodo(todo);
+  const handleEditTodo = async (todo: Todo) => {
+    try{
+      const detailTodo = await getTodoDetail(todo.id);
+      
+      setEditTodo(detailTodo);
+    }
+    catch(error){
+      console.log(error);
+    }
     setPopUp(true);
   }
 
@@ -197,9 +204,10 @@ const Homepage = () => {
             <h1 className="text-5xl text-white">Welcome, {nameTitle}</h1>
             <h1 className="text-xl text-gray-400">A little progress every day adds up.</h1>
 
-            <div className="flex rounded-xl p-2 px-4 w-fit border-1 border-gray-200 bg-white text-red-300 hover:bg-brand-cream hover:text-red-500 hover:cursor-pointer mt-3">
-            <button onClick={() => handleLogout()}>Logout</button>
-            </div>
+            <button 
+            className="flex rounded-xl p-2 px-4 w-fit border-1 border-gray-200 bg-white text-red-300 hover:bg-brand-cream hover:text-red-500 hover:cursor-pointer mt-3" onClick={() => handleLogout()}>
+              Logout
+            </button>
           </div>
           <div className="flex flex-row gap-x-10  mt-8">
             <div className="flex flex-row rounded-xl bg-brand-cream p-2 px-3 gap-x-10">
@@ -324,6 +332,9 @@ const Homepage = () => {
                               
                               <p className="pl-2 text-xs">Start: {parseApiDate(todo.startDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
                               <p className="pl-2 text-xs">End: {parseApiDate(todo.endDate)?.toLocaleString("id-ID", { dateStyle: 'short', timeStyle: 'short' })}</p>
+
+                              <p className="pl-2 text-xs">Total Sub Todo: {todo.totalSubTodos}</p>
+                              <p className="pl-2 text-xs">Completed Sub Todo: {todo.completedSubTodos}</p>
                           </div>
                         </div>
 
@@ -344,7 +355,7 @@ const Homepage = () => {
         {isMounted && deleteId != null 
           && 
           <ValidationModal
-          message="Yakin ingin menghapus tugas ini?" 
+          message="Are you sure?" 
           onClose={() => setDeleteId(null)} 
           onConfirm={() => {
             if (deleteId !== null) {

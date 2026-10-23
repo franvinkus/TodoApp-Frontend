@@ -10,6 +10,8 @@ export interface Todo {
   endDate: Date;
   isCompleted: boolean;
   todoPriority: string;
+  totalSubTodos: number;     
+  completedSubTodos: number;
 }
 
 export interface PostTodoModel {
@@ -17,6 +19,7 @@ export interface PostTodoModel {
   description: string;
   startDate: string;
   endDate: string;
+  subTodos: { title: string; isDone: boolean }[];
 }
 
 export interface PutTodoModel {
@@ -33,6 +36,10 @@ export interface login{
 
 export interface register extends login{
     email: string;
+}
+
+export interface TodoDetail extends Todo {
+  subTodos: { id: string; title: string; isDone: boolean }[];
 }
 
 
@@ -113,6 +120,18 @@ export const getTodos = async (title?: string, sort?: string, prioritySort?: str
     throw error;
   }
 };
+
+export const getTodoDetail = async (id: number): Promise<TodoDetail> => {
+  try{
+    const response = await axios.get(`${BASE_API}/Todo/Get-Detail/${id}`, {
+      withCredentials: true
+    });
+    return response.data;
+  }catch (error){
+    console.error('Error getting todo detail:', error);
+    throw error;
+  }
+}
 
 export const postTodo = async (todoData: PostTodoModel): Promise<Todo[]> => {
     try{

@@ -13,6 +13,7 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
     const [email, setEmail] = useState('');
     const [loggingIn, setIsLoggingIn] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const clearInputs = () =>{
         setUsername('');
@@ -40,8 +41,9 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                     clearInputs();
                     setIsLoading(false);
                 }
-            }catch(error){
-                console.log('error bray: ', error);
+            }catch(error: any){
+                console.log('error bray: ', error.response.data.message);
+                setError(error.response.data.message);
             }finally {
                 setIsLoading(false);
             }
@@ -59,8 +61,9 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                     clearInputs();
                     setIsLoading(false);
                 }
-            }catch(error){
-                console.log('error bray: ', error);
+            }catch(error: any){
+                console.log('error bray: ', error.response.data.message);
+                setError(error.response.data.message);
             }finally {
                 setIsLoading(false);
             }
@@ -137,6 +140,13 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                                 </div>
                             </div>
                         </form>
+                        {
+                            error && (
+                                <div className="text-red-500 p-2 rounded-lg mt-2 text-center">
+                                    {error}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
 
@@ -221,6 +231,13 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                                 </div>
                             </div>
                         </form>
+                        {
+                            error && (
+                                <div className="text-red-500 p-2 rounded-lg mt-2 text-center">
+                                    {error}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             )}
