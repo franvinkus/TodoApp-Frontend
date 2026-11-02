@@ -8,6 +8,7 @@ import { getUserName, isLoggedIn } from "@/utils/Auth";
 import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from "lucide-react";
 import ValidationModal from "@/component/ValidationModal";
 import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
+import PetalBackground from "@/component/PetalBackground";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -193,7 +194,8 @@ const Homepage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-blue-one from-80% to-blue-two/85 to-95% shadow-inner">
-      <div className="flex flex-col items-center p-10">
+      <PetalBackground />
+      <div className="flex flex-col items-center relative p-10 z-1">
         {isMounted && isModal && (
           <LoginModal onClose={handleCloseModal} onSuccessLogin={(newUsername) => setNameTitle(newUsername)}/>
         )}
