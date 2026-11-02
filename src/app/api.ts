@@ -53,7 +53,7 @@ export const API_URL = {
         Login:`${BASE_API}/User/user-login`,
         Register: `${BASE_API}/User/user-register`,
         Logout: `${BASE_API}/User/user-logout`,
-        refreshToken: `${BASE_API}/User/user-refresh`
+        refreshToken: `${BASE_API}/User/refresh-token`
     }
 }
 
