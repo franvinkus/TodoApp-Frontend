@@ -95,7 +95,7 @@ export const logout = async() => {
     }finally{
         setAccessToken(null);
         localStorage.removeItem("username");
-        window.location.href = "/";
+        window.location.href = "/login";
     }
 }
 
@@ -219,7 +219,7 @@ axios.interceptors.response.use(
             }
             catch(err){
                 setAccessToken(null);
-                window.location.href = "/";
+                window.location.href = "/login";
                 return Promise.reject(err);
             }
         }
