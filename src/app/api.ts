@@ -219,6 +219,7 @@ axios.interceptors.response.use(
             }
             catch(err){
                 setAccessToken(null);
+                localStorage.removeItem("username");
                 window.location.href = "/";
                 return Promise.reject(err);
             }
