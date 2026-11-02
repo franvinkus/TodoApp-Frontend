@@ -95,7 +95,7 @@ export const logout = async() => {
     }finally{
         setAccessToken(null);
         localStorage.removeItem("username");
-        window.location.href = "/login";
+        window.location.href = "/";
     }
 }
 
@@ -205,7 +205,7 @@ axios.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if(error.response?.status === 401 && !originalRequest._retry){
+        if(error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== API_URL.AUTH.refreshToken){
             originalRequest._retry = true;
             try{
                 const res = await axios.post(API_URL.AUTH.refreshToken, {
@@ -219,7 +219,7 @@ axios.interceptors.response.use(
             }
             catch(err){
                 setAccessToken(null);
-                window.location.href = "/login";
+                window.location.href = "/";
                 return Promise.reject(err);
             }
         }
