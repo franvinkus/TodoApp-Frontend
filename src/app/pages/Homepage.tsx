@@ -9,6 +9,7 @@ import { BadgeCheck, Circle, CircleCheckBig, Pencil, Plus, Search, Trash } from 
 import ValidationModal from "@/component/ValidationModal";
 import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
 import PetalBackground from "@/component/PetalBackground";
+import { triggerConfetti } from "@/utils/confetti";
 
 const Homepage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -89,6 +90,10 @@ const Homepage = () => {
     try{
       await patchTodo(id);
       fetchGetTodo();
+      const current = todos.find((t) => t.id === id);
+      if (current && !current.isCompleted) {
+        triggerConfetti();
+      }
     }catch(error){
       console.log("Error patching", error);
     }
@@ -195,7 +200,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-tr from-blue-one from-80% to-blue-two/85 to-95% shadow-inner">
       <PetalBackground />
-      <div className="flex flex-col items-center relative p-10 z-1">
+      <div className="flex flex-col items-center relative p-10 z-10">
         {isMounted && isModal && (
           <LoginModal onClose={handleCloseModal} onSuccessLogin={(newUsername) => setNameTitle(newUsername)}/>
         )}
