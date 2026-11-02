@@ -1,4 +1,4 @@
-import { login, register } from "@/app/api";
+import { login, register, setAccessToken } from "@/app/api";
 import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 
@@ -36,6 +36,7 @@ export default function LoginModal({onClose, onSuccessLogin}: param) {
                 const data = await login(payload);
                 if(data){
                     localStorage.setItem("username", username || payload.username);
+                    setAccessToken(data.token)
                     onSuccessLogin(username || payload.username);
                     onClose();
                     clearInputs();

@@ -42,6 +42,7 @@ export interface TodoDetail extends Todo {
   subTodos: { id: string; title: string; isDone: boolean }[];
 }
 
+let inMemoryToken: string | null;
 
 const BASE_API =  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5020/api" || "http://localhost:7016/api";
 
@@ -51,7 +52,8 @@ export const API_URL = {
     AUTH:{
         Login:`${BASE_API}/User/user-login`,
         Register: `${BASE_API}/User/user-register`,
-        Logout: `${BASE_API}/User/user-logout`
+        Logout: `${BASE_API}/User/user-logout`,
+        refreshToken: `${BASE_API}/User/refreshToken`
     }
 }
 
@@ -64,10 +66,10 @@ export const login = async (req: login) => {
         {
             withCredentials: true 
         });
-        console.log(response);
         const username = response.data.username;
         localStorage.setItem("username", username);
-        return true;
+        const token = response.data.token
+        return {success: true, token, username};
     } catch(error){
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
@@ -81,12 +83,19 @@ export const login = async (req: login) => {
 
 export const logout = async() => {
     try{
-        const response = await axios.post(API_URL.AUTH.Logout);
+        const response = await axios.post(API_URL.AUTH.Logout,{
+             
+        },{
+            withCredentials: true
+        });
         console.log(response);
         return true;
     }catch(error){
-        console.log("Error logging out", error);
-        throw error;
+        console.error("Server logout failed, clearing local state anyway", error);
+    }finally{
+        setAccessToken(null);
+        localStorage.removeItem("username");
+        window.location.href = "/";
     }
 }
 
@@ -180,3 +189,41 @@ export const deleteTodo = async (id: number): Promise<Todo[]> => {
         throw error;
     }
 };
+
+export const setAccessToken = (token: string | null) => {
+    inMemoryToken = token;
+}
+
+axios.interceptors.request.use((config) => {
+    if (inMemoryToken) {
+        config.headers.Authorization = `Bearer ${inMemoryToken}`;
+    }
+    return config;
+});
+
+axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        if(error.response?.status === 401 && !originalRequest._retry){
+            originalRequest._retry = true;
+            try{
+                const res = await axios.post(API_URL.AUTH.refreshToken, {
+
+                }, {
+                    withCredentials: true
+                });
+                setAccessToken(res.data.token);
+                originalRequest.headers.Authorization = `Bearer ${res.data.token}`;
+                return axios(originalRequest);
+            }
+            catch(err){
+                setAccessToken(null);
+                window.location.href = "/";
+                return Promise.reject(err);
+            }
+        }
+        return Promise.reject(error);
+    }
+    
+)
