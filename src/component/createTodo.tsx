@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { postTodo, putTodo, TodoDetail } from "../app/api";
 import { Circle, CircleCheckBig } from "lucide-react";
+import LeafSpinner from "./leafSpinner";
 
 interface createTodoProps{
     onClose: () => void;
@@ -17,6 +18,8 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
         todoPriority: "Low",
         subTodos: [] as { title: string; isDone: boolean }[]
     });
+
+    const [submitting, isSubmitting] = useState(false);
 
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -116,6 +119,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try{
+            isSubmitting(true);     
             const payload = {
                 ...formData,
                 startDate: formData.startDate ? new Date(formData.startDate).toISOString() : "",
@@ -128,14 +132,21 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
             }else{
                 await postTodo(payload);
             }
+            
+            await new Promise((resolve) => setTimeout(resolve, 1200));
             onClose();
             onSuccess();
         }catch (error){
             console.error("Failed to do the operation:", error);
+            alert("Failed to plant task. Please try again.");
+        }finally {
+            isSubmitting(false);
         }
     }
 
     return (
+        <>
+        {submitting && <LeafSpinner message= {initialData? "Nurturing Task..." : "Planting Task..."}/>}
         <div className="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-brightness-65 z-40 ">
             <div className="bg-brand-cream p-6 rounded-lg shadow-xl max-w-[90%] max-h-[90%] w-auto border-1 border-gray-300 overflow-y-auto custom-scrollbar">
                 <div className="flex justify-between mb-6">
@@ -295,7 +306,7 @@ const CreateTodo = ({onClose, onSuccess, initialData}: createTodoProps) => {
 
             </div>
         </div>
-
+        </>
     );
 }
 
